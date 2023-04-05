@@ -1,5 +1,10 @@
 ﻿namespace Curiosity
 {
+    /// <summary>
+    /// Main class for the Curiosity robot
+    /// @author: Emre Altan <emre.altan2@gmail.com>
+    /// @date: 2023-04-04
+    /// </summary>
     public class CuriosityRobot
     {
         private string grid;
@@ -8,20 +13,31 @@
 
         private Dictionary<FacingEnum, List<int>> commandIdentifiersMap;
 
+        /// <summary>
+        /// Constructor method for the Curiosity robot
+        /// </summary>
+        /// <param name="grid">input for the Mars plateau grid. i.e 5x5</param>
+        /// <param name="commands">commands for the robot. i.e LFLRFLFF</param>
         public CuriosityRobot(string grid, string commands)
         {
             this.grid = grid;
             this.commands = commands;
             gridBoundaries = new int[] { 1, 1 };
 
-            commandIdentifiersMap = new Dictionary<FacingEnum, List<int>>();
-            //List<int> => { axis, step }
-            commandIdentifiersMap.Add(FacingEnum.West, new List<int>() { 0, -1 });
-            commandIdentifiersMap.Add(FacingEnum.East, new List<int>() { 0, 1 });
-            commandIdentifiersMap.Add(FacingEnum.South, new List<int>() { 1, -1 });
-            commandIdentifiersMap.Add(FacingEnum.North, new List<int>() { 1, 1 });
+            //populate the command identifier map. List<int> => { axis, step }
+            commandIdentifiersMap = new Dictionary<FacingEnum, List<int>>
+            {
+                { FacingEnum.West, new List<int>() { 0, -1 } },
+                { FacingEnum.East, new List<int>() { 0, 1 } },
+                { FacingEnum.South, new List<int>() { 1, -1 } },
+                { FacingEnum.North, new List<int>() { 1, 1 } }
+            };
         }
 
+        /// <summary>
+        /// Executes the commands and returns the final position of the robot
+        /// </summary>
+        /// <returns>final position of the robot as a string with the format like: 1,4,West</returns>
         public string Run() {
             //starting position 1x1,North
             Position position = new Position(new int[] { 1, 1 }, FacingEnum.North);
@@ -30,14 +46,17 @@
                 return GenerateResult(position);
             }
 
-            SetGrid();
+            SetGridBoundaries();
 
             position = ExecuteCommands(position);
 
             return GenerateResult(position);
         }
 
-        private void SetGrid()
+        /// <summary>
+        /// Sets gridBoundaries by using the grid input 
+        /// </summary>
+        private void SetGridBoundaries()
         {
             try
             {
@@ -58,6 +77,11 @@
             }
         }
 
+        /// <summary>
+        /// Executes the commands and calculates the final position of the robot
+        /// </summary>
+        /// <param name="position">initial position</param>
+        /// <returns>final position of the robot</returns>
         private Position ExecuteCommands(Position position)
         {
             foreach(char c in commands.ToCharArray())
@@ -94,6 +118,11 @@
             return position;
         }
 
+        /// <summary>
+        /// Converts the position object to the result string with the format like: 1,4,West
+        /// </summary>
+        /// <param name="position">position of the robot</param>
+        /// <returns>formatted string version of the position</returns>
         private string GenerateResult(Position position)
         {
             string result = position.Coordinates[0] + "," + position.Coordinates[1] + "," + position.Direction.ToString();
@@ -108,8 +137,16 @@
             West = 3
         }
 
+        /// <summary>
+        /// Inner class for storing the current position info
+        /// </summary>
         class Position
         {
+            /// <summary>
+            /// Constructor for the Position class
+            /// </summary>
+            /// <param name="coordinates">coordinates (x,y) of the current position</param>
+            /// <param name="direction">facing direction of the robot</param>
             public Position(int[] coordinates, FacingEnum direction)
             {
                 Coordinates = coordinates;
