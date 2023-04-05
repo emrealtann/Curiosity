@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CuriosityTest
 {
-    public class UnitTest1
+    public class CuriosityRobotTest
     {
         [Fact]
         public void Empty_Grid_Returns_Initial_Location()
